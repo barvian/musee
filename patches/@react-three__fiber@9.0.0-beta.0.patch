@@ -1,0 +1,13 @@
+diff --git a/dist/react-three-fiber.esm.js b/dist/react-three-fiber.esm.js
+index a6c60b6f82c6ba0d1e80da672059cd93ca84586d..2608914be882bed7995c4557b68707f0d2f82bb6 100644
+--- a/dist/react-three-fiber.esm.js
++++ b/dist/react-three-fiber.esm.js
+@@ -124,7 +124,7 @@ const CanvasImpl = /*#__PURE__*/React.forwardRef(function Canvas({
+   // Create a known catalogue of Threejs-native elements
+   // This will include the entire THREE namespace by default, users can extend
+   // their own elements by using the createRoot API instead
+-  React.useMemo(() => extend(THREE), []);
++  // React.useMemo(() => extend(THREE), []);
+   const Bridge = useBridge();
+   const [containerRef, containerRect] = useMeasure({
+     scroll: true,

@@ -1,0 +1,8 @@
+:root {
+	/* background: radial-gradient(45.22% 60.45% at 56.56% 45.17%, #1f2022, ease-in-out, #050505); */
+	scroll-snap-type: y mandatory;
+}
+
+body {
+	display: contents;
+}
