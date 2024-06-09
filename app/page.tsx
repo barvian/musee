@@ -46,7 +46,7 @@ const cameraLookAts: Array<Vector3Tuple> = [
 ]
 const floatIntensities: Array<Vector3Tuple> = [
 	[1, 0, 0],
-	[0, 0, 2],
+	[0, 0, 1],
 	[0, 0, 0],
 	[0, 0, 0],
 	[0, 0, 0]
@@ -68,20 +68,67 @@ export default function Home() {
 
 	// const progress = useMergedProgress(2)
 
-	// Update the camera position and lookAt based on the scroll position
-	const makeOnScrollProgress = (i: number) => {
-		const position = transform([0, 1], [cameraPositions[i - 1], cameraPositions[i]])
-		const lookAt = transform([0, 1], [cameraLookAts[i - 1], cameraLookAts[i]])
-		const float = transform(
-			[0, 0.1, 0.9, 1], // stop float mid-transition
-			[floatIntensities[i - 1], ZERO, ZERO, floatIntensities[i]]
-		)
-		return (progress: number) => {
-			cameraPosition.set(position(progress))
-			cameraLookAt.set(lookAt(progress))
-			floatIntensity.set(float(progress))
+	// Create one IntersectionObserver for all sections to handle race conditions
+	useLayoutEffect(() => {
+		const onEnds = new WeakMap<Element, () => void>()
+		const onScrolls = new WeakMap<Element, (progress: number) => void>()
+
+		sectionRefs.current.forEach((ref, curr) => {
+			const prev = Math.max(curr - 1, 0)
+
+			const position = transform([0, 1], [cameraPositions[prev], cameraPositions[curr]])
+			const lookAt = transform([0, 1], [cameraLookAts[prev], cameraLookAts[curr]])
+			const float = transform(
+				[0, 0.1, 0.9, 1], // stop float mid-transition
+				[floatIntensities[prev], ZERO, ZERO, floatIntensities[curr]]
+			)
+			onScrolls.set(ref.current!, (progress: number) => {
+				cameraPosition.set(position(progress))
+				cameraLookAt.set(lookAt(progress))
+				floatIntensity.set(float(progress))
+			})
+		})
+
+		const onIntersectionChange: IntersectionObserverCallback = (entries) => {
+			entries
+				// Handle all non-intersecting elements first
+				.sort((a, b) => (a.isIntersecting === b.isIntersecting ? 0 : !a.isIntersecting ? -1 : 1))
+				.forEach((entry) => {
+					const onEnd = onEnds.get(entry.target)
+
+					// console.log(makeOnScroll(entry.target)(0.5))
+					/**
+					 * If there's no change to the intersection, we don't need to
+					 * do anything here.
+					 */
+					if (entry.isIntersecting === Boolean(onEnd)) return
+
+					if (entry.isIntersecting) {
+						const newOnEnd = scrollInfo(
+							({ y: { progress } }) => onScrolls.get(entry.target)?.(progress),
+							{
+								target: entry.target,
+								offset: ['start end', 'start start']
+							}
+						)
+						onEnds.set(entry.target, newOnEnd)
+					} else if (onEnd) {
+						onEnd()
+						onEnds.delete(entry.target)
+					}
+				})
 		}
-	}
+
+		const observer = new IntersectionObserver(onIntersectionChange, {
+			rootMargin: '-100% 0px 0px 0px' // small sliver at the bottom
+		})
+
+		sectionRefs.current.forEach((ref) => {
+			observer.observe(ref.current!)
+		})
+
+		return () => observer.disconnect()
+	}, [])
 
 	return (
 		<>
@@ -143,7 +190,6 @@ export default function Home() {
 			<LeftAlignedSection
 				id="alexandros-of-antioch"
 				ref={sectionRefs.current[1]}
-				onScrollProgress={makeOnScrollProgress(1)}
 				items={[
 					{
 						title: 'Alexandros of Antioch',
@@ -175,7 +221,7 @@ export default function Home() {
 					}
 				]}
 			/>
-			<Section ref={sectionRefs.current[2]} onScrollProgress={makeOnScrollProgress(2)}>
+			<Section ref={sectionRefs.current[2]}>
 				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
 					Museum of Ancient Art
 				</h1>
@@ -185,7 +231,7 @@ export default function Home() {
 					glimpse into the artistic achievements and cultural expressions of ancient societies.
 				</p>
 			</Section>
-			<Section ref={sectionRefs.current[3]} onScrollProgress={makeOnScrollProgress(3)}>
+			<Section ref={sectionRefs.current[3]}>
 				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
 					Museum of Ancient Art
 				</h1>
@@ -195,7 +241,7 @@ export default function Home() {
 					glimpse into the artistic achievements and cultural expressions of ancient societies.
 				</p>
 			</Section>
-			<Section id="last" ref={sectionRefs.current[4]} onScrollProgress={makeOnScrollProgress(4)}>
+			<Section id="last" ref={sectionRefs.current[4]}>
 				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
 					Museum of Ancient Art
 				</h1>
@@ -356,34 +402,12 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	)
 }
 
-type SectionProps = JSX.IntrinsicElements['section'] & {
-	ref?: Ref<HTMLElement>
-	onScrollProgress?: (progress: number) => void
-}
+type SectionProps = JSX.IntrinsicElements['section'] & {}
 
-function Section({ children, className, onScrollProgress, ref, ...props }: SectionProps) {
-	const innerRef = useRef<HTMLElement>(null)
-	useImperativeHandle(ref, () => innerRef.current!, [])
-
-	// Track scroll progress if in view
-	useLayoutEffect(() => {
-		if (!onScrollProgress) return
-		return inView(
-			innerRef.current!,
-			() => {
-				return scrollInfo(({ y: { progress } }) => onScrollProgress(progress), {
-					target: innerRef.current!,
-					offset: ['0 1', '0 0']
-				})
-			},
-			{ margin: '-100% 0px 0px 0px' } // small sliver at the bottom
-		)
-	}, [onScrollProgress])
-
+function Section({ children, className, ...props }: SectionProps) {
 	return (
 		<section
 			{...props}
-			ref={innerRef}
 			className={clsx(
 				'container relative min-h-screen snap-start pt-[--header-height] ~pb-6/16',
 				className
