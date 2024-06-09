@@ -9,15 +9,12 @@ import {
 	useAnimate,
 	stagger,
 	scrollInfo,
-	useMotionValue,
-	transform,
-	inView
+	useSpring
 } from 'framer-motion'
 import {
 	type Ref,
 	type JSX,
 	createRef,
-	useImperativeHandle,
 	useRef,
 	type ReactNode,
 	Suspense,
@@ -28,8 +25,8 @@ import clsx from 'clsx'
 import SplitText from '@/components/SplitText'
 import Scene from './Scene'
 import type { Vector3Tuple } from 'three'
-import useMergedProgress from '@/hooks/useMergedProgress'
 import { transformVector3, useMotionVector3, useVector3Spring } from '@/utils/motion'
+import { useControls } from 'leva'
 
 const cameraPositions: Array<Vector3Tuple> = [
 	[0, 0, 20],
@@ -63,9 +60,16 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
+	const { stiffness, damping, mass } = useControls({
+		stiffness: 150,
+		damping: 70,
+		mass: 1
+	})
+
 	const cameraPosition = useMotionVector3(cameraPositions[0])
-	const smoothedCameraPosition = useVector3Spring(cameraPosition)
+	const smoothedCameraPosition = useVector3Spring(cameraPosition, { stiffness, damping, mass })
 	const cameraLookAt = useMotionVector3(cameraLookAts[0])
+	const smoothedCameraLookAt = useVector3Spring(cameraLookAt, { stiffness, damping, mass })
 	const floatIntensity = useMotionVector3(floatIntensities[0])
 
 	// const progress = useMergedProgress(2)
@@ -147,7 +151,7 @@ export default function Home() {
 					transition={{ duration: 0.75 }}
 				>
 					<Scene
-						cameraLookAt={cameraLookAt}
+						cameraLookAt={smoothedCameraLookAt}
 						cameraPosition={smoothedCameraPosition}
 						floatIntensity={floatIntensity}
 						className="!fixed !inset-0"
@@ -326,10 +330,16 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	const contentRefs = useRef(Array<HTMLElement | null>(items.length))
 
 	// Entrance animations
-	const { scrollYProgress: inProgress } = useScroll({
+	const { stiffness, damping, mass } = useControls({
+		stiffness: 150,
+		damping: 70,
+		mass: 1
+	})
+	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
 		offset: ['start 80%', 'center 55%'] // 55% = compensate for the header
 	})
+	const inProgress = useSpring(_inProgress, { stiffness, damping, mass })
 	useScrubber(
 		() =>
 			animate(
@@ -342,13 +352,13 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 					[
 						contentRefs.current[i]!,
 						{ opacity: [0, 1], y: ['50%', '0'] },
-						{ duration: 0.65, delay: 0.15, at: i * 0.15, ease: 'easeIn' }
+						{ duration: 0.65, delay: 0.15, at: i * 0.15, ease: 'easeOut' }
 					]
 				])
 			),
 		inProgress,
 		{
-			once: true
+			// once: true
 		}
 	)
 
@@ -428,10 +438,16 @@ function BottomAlignedSection2({
 	const content2Ref = useRef<HTMLParagraphElement>(null)
 
 	// Entrance animations
-	const { scrollYProgress: inProgress } = useScroll({
+	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
 		offset: ['start end', 'end end'] // 55% = compensate for the header
 	})
+	const { stiffness, damping, mass } = useControls({
+		stiffness: 150,
+		damping: 70,
+		mass: 1
+	})
+	const inProgress = useSpring(_inProgress, { stiffness, damping, mass })
 	useScrubber(
 		() =>
 			animate([
@@ -440,11 +456,11 @@ function BottomAlignedSection2({
 					{ opacity: [0, 1], y: ['50%', '0'] },
 					{ duration: 0.35, delay: stagger(0.035, { startDelay: 0.35 }) }
 				],
-				[content2Ref.current!, { opacity: [0, 1], y: ['75%', '0'] }, { duration: 0.5, at: '-0.35' }]
+				[content2Ref.current!, { opacity: [0, 1], y: ['75%', '0'] }, { duration: 0.75, at: '-1' }]
 			]),
 		inProgress,
 		{
-			once: true
+			// once: true
 		}
 	)
 

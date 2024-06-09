@@ -37,6 +37,7 @@
 		"eslint": "^8",
 		"eslint-config-next": "15.0.0-rc.0",
 		"fluid-tailwind": "^0.3.9",
+		"leva": "^0.9.35",
 		"postcss": "^8",
 		"postcss-easing-gradients": "^3.0.1",
 		"prettier-plugin-tailwindcss": "^0.6.1",
@@ -47,7 +48,8 @@
 	"pnpm": {
 		"patchedDependencies": {
 			"@react-three/fiber@9.0.0-beta.0": "patches/@react-three__fiber@9.0.0-beta.0.patch",
-			"@react-three/postprocessing@2.16.2": "patches/@react-three__postprocessing@2.16.2.patch"
+			"@react-three/postprocessing@2.16.2": "patches/@react-three__postprocessing@2.16.2.patch",
+			"leva@0.9.35": "patches/leva@0.9.35.patch"
 		}
 	}
 }
