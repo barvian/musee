@@ -25,13 +25,17 @@ export function Item({
 	const { scrollYProgress } = useScroll({
 		target: sectionRef,
 		layoutEffect: false,
-		offset: ['start end', 'end start']
+		offset: ['start end', 'start start', 'end end', 'end start']
 	})
-	const width = useTransform(scrollYProgress, [0, 0.5, 1], ['0.125rem', '3rem', '0.125rem'])
+	const width = useTransform(
+		scrollYProgress,
+		[0, 1 / 3, 2 / 3, 1],
+		['0.125rem', '3rem', '3rem', '0.125rem']
+	)
 	const backgroundColor = useTransform(
 		scrollYProgress,
-		[0, 0.5, 1],
-		[colors.white, colors.blue['800'], colors.white]
+		[0, 1 / 3, 2 / 3, 1],
+		[colors.white, colors.blue['800'], colors.blue['800'], colors.white]
 	)
 
 	return (

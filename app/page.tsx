@@ -60,9 +60,11 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
-	const { stiffness, damping, mass } = useControls({
-		stiffness: 150,
-		damping: 70,
+	const { stiffness, damping, mass } = useControls('scene', {
+		// stiffness: 150,
+		// damping: 70,
+		stiffness: 100,
+		damping: 40,
 		mass: 1
 	})
 
@@ -331,8 +333,8 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 
 	// Entrance animations
 	const { stiffness, damping, mass } = useControls({
-		stiffness: 150,
-		damping: 70,
+		stiffness: 100,
+		damping: 25,
 		mass: 1
 	})
 	const { scrollYProgress: _inProgress } = useScroll({
@@ -443,8 +445,8 @@ function BottomAlignedSection2({
 		offset: ['start end', 'end end'] // 55% = compensate for the header
 	})
 	const { stiffness, damping, mass } = useControls({
-		stiffness: 150,
-		damping: 70,
+		stiffness: 100,
+		damping: 25,
 		mass: 1
 	})
 	const inProgress = useSpring(_inProgress, { stiffness, damping, mass })
