@@ -1,29 +1,39 @@
 import interleave from '@/utils/interleave'
-import { useRef, type ComponentType } from 'react'
+import { useRef, type ComponentType, type Ref } from 'react'
 
 type SplitTextProps = JSX.IntrinsicElements['span'] & {
 	children: string
-	CharacterWrapper: ComponentType<{ children: string; index: number }>
+	characterRef: (instance: HTMLSpanElement | null, index: number) => void
 }
 
 /**
  * Naive text splitting component
  */
-export default function SplitText({ children, CharacterWrapper, ...props }: SplitTextProps) {
+export default function SplitText({ children, characterRef, ...props }: SplitTextProps) {
 	const words = interleave(children.split(' '), ' ')
 	let charIndex = 0
 
 	return (
 		<span {...props} aria-label={children}>
-			{words.map((word, w) => (
-				<span aria-hidden="true" className="whitespace-pre" key={w}>
-					{word.split('').map((char, c) => (
-						<CharacterWrapper index={charIndex++} key={c}>
-							{char}
-						</CharacterWrapper>
-					))}
-				</span>
-			))}
+			{words.map((word, w) =>
+				word === ' ' ? (
+					<> </>
+				) : (
+					<span aria-hidden="true" className="inline-block" key={w}>
+						{word.split('').map((char, c) => (
+							<span
+								className="inline-block"
+								ref={(e) => {
+									characterRef?.(e, charIndex++)
+								}}
+								key={c}
+							>
+								{char}
+							</span>
+						))}
+					</span>
+				)
+			)}
 		</span>
 	)
 }

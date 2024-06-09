@@ -68,7 +68,7 @@ export default function Home() {
 
 	// const progress = useMergedProgress(2)
 
-	// Create one IntersectionObserver for all sections to handle race conditions
+	// Create one IntersectionObserver for all sections, to handle race conditions
 	useLayoutEffect(() => {
 		const onEnds = new WeakMap<Element, () => void>()
 		const onScrolls = new WeakMap<Element, (progress: number) => void>()
@@ -91,7 +91,7 @@ export default function Home() {
 
 		const onIntersectionChange: IntersectionObserverCallback = (entries) => {
 			entries
-				// Handle all non-intersecting elements first
+				// Handle all non-intersecting elements first, so we can unsubscribe them first
 				.sort((a, b) => (a.isIntersecting === b.isIntersecting ? 0 : !a.isIntersecting ? -1 : 1))
 				.forEach((entry) => {
 					const onEnd = onEnds.get(entry.target)
@@ -173,7 +173,10 @@ export default function Home() {
 					href="#alexandros-of-antioch"
 					sectionRef={sectionRefs.current[1]}
 				/>
-				<TOC.Item sectionRef={sectionRefs.current[2]} />
+				<TOC.Item
+					href="#discovery-of-a-mutilated-masterpiece"
+					sectionRef={sectionRefs.current[2]}
+				/>
 				<TOC.Item sectionRef={sectionRefs.current[3]} />
 				<TOC.Item href="#last" sectionRef={sectionRefs.current[4]} />
 			</TOC.Root>
@@ -221,16 +224,24 @@ export default function Home() {
 					}
 				]}
 			/>
-			<Section ref={sectionRefs.current[2]}>
-				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
-					Museum of Ancient Art
-				</h1>
-				<p className="justify-self-center text-sm ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
-					History and creativity converge to tell the captivating stories of civilizations long
-					past. Our collection, ranging from majestic sculptures to intricate pottery, offers a
-					glimpse into the artistic achievements and cultural expressions of ancient societies.
-				</p>
-			</Section>
+			<BottomAlignedSection2
+				title="Discovery of a mutilated masterpiece"
+				id="discovery-of-a-mutilated-masterpiece"
+				ref={sectionRefs.current[2]}
+				content1={
+					<>
+						A farmer named Yorgos Kentrotas found the statue while digging in his field on the Greek
+						island of Milos. He uncovered the statue in several pieces within a buried niche in the
+						ancient city ruins.
+					</>
+				}
+				content2={
+					<>
+						Olivier Voutier, a French sailor with an interest in archaeology, observed the discovery
+						and encouraged Yorgos to keep digging.
+					</>
+				}
+			/>
 			<Section ref={sectionRefs.current[3]}>
 				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
 					Museum of Ancient Art
@@ -271,18 +282,17 @@ function BottomAlignedSection({
 
 	const { scrollYProgress } = useScroll({
 		target: innerRef,
-		layoutEffect: false,
 		offset: ['end 55%', 'end 35%']
 	})
 	const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
 
 	return (
-		<Section className={clsx('content-end items-center', className)} {...props}>
+		<Section className={clsx('content-end', className)} {...props}>
 			<motion.div style={{ opacity }} ref={innerRef} className="grid-cols grid gap-4">
 				<TitleTag className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
 					{title}
 				</TitleTag>
-				<p className="justify-self-center text-sm ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
+				<p className="justify-self-center text-sm text-white/70 ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
 					{children}
 				</p>
 			</motion.div>
@@ -297,11 +307,9 @@ type LeftAlignedSectionProps = Omit<SectionProps, 'children'> & {
 	}[]
 }
 function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
-	const [scope, animate] = useAnimate()
+	const [scope, animate] = useAnimate<HTMLDivElement>()
 
 	const divRefs = useRef(Array<HTMLDivElement | null>(items.length))
-	// TODO: splice these if items ever change
-	// https://stackoverflow.com/a/56063129
 	const characterRefs = useRef(
 		Array(items.length)
 			.fill(null)
@@ -339,7 +347,6 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	// Exit animations
 	const { scrollYProgress: outProgress } = useScroll({
 		target: scope,
-		layoutEffect: false,
 		offset: ['center', 'end start']
 	})
 	useScrubber(
@@ -352,10 +359,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 					{ delay: stagger(0.15, { startDelay: 0.05, ease: 'easeIn' }), duration: 0.5 }
 				]
 			]),
-		outProgress,
-		{
-			layoutEffect: false
-		}
+		outProgress
 	)
 
 	return (
@@ -371,17 +375,9 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 						>
 							<dt className="font-serif ~text-3xl/6xl">
 								<SplitText
-									CharacterWrapper={({ children, index }) => (
-										<span
-											ref={(el) => {
-												characterRefs.current[i][index] = el
-											}}
-											className="inline-block"
-											key={index}
-										>
-											{children}
-										</span>
-									)}
+									characterRef={(el, index) => {
+										characterRefs.current[i][index] = el
+									}}
 								>
 									{title}
 								</SplitText>
@@ -390,13 +386,97 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 								ref={(el) => {
 									contentRefs.current[i] = el
 								}}
-								className="max-w-prose text-xs text-white/60 ~mt-3/6"
+								className="max-w-prose text-xs text-white/70 ~mt-3/6"
 							>
 								{content}
 							</dd>
 						</div>
 					))}
 				</dl>
+			</div>
+		</Section>
+	)
+}
+
+type BottomAlignedSection2Props = Omit<SectionProps, 'ref' | 'children'> & {
+	title: string
+	ref: Ref<HTMLElement>
+	content1: ReactNode
+	content2?: ReactNode
+}
+function BottomAlignedSection2({
+	title,
+	content1,
+	content2,
+	...props
+}: BottomAlignedSection2Props) {
+	const [scope, animate] = useAnimate<HTMLDivElement>()
+
+	const titleWrapperRef = useRef<HTMLDivElement>(null)
+	const characterRefs = useRef<Array<HTMLSpanElement | null>>([])
+	const content1WrapperRef = useRef<HTMLDivElement>(null)
+	const content1Ref = useRef<HTMLParagraphElement>(null)
+	const content2WrapperRef = useRef<HTMLDivElement>(null)
+	const content2Ref = useRef<HTMLParagraphElement>(null)
+
+	// Entrance animations
+	const { scrollYProgress: inProgress } = useScroll({
+		target: scope,
+		offset: ['start end', 'end end'] // 55% = compensate for the header
+	})
+	useScrubber(
+		() =>
+			animate([
+				[
+					characterRefs.current.filter(Boolean),
+					{ opacity: [0, 1], y: ['50%', '0'] },
+					{ duration: 0.35, delay: stagger(0.035, { startDelay: 0.35 }) }
+				],
+				[content2Ref.current!, { opacity: [0, 1], y: ['75%', '0'] }, { duration: 0.5, at: '-0.35' }]
+			]),
+		inProgress,
+		{
+			// once: true
+		}
+	)
+
+	// Exit animations
+	const { scrollYProgress: outProgress } = useScroll({
+		target: scope,
+		offset: ['center', 'end start']
+	})
+	useScrubber(
+		() =>
+			// Framer Motion doesn't compute the right duration unless it's in a sequence:
+			animate([[titleWrapperRef.current!, { opacity: [1, 0] }, { duration: 0.5 }]]),
+		outProgress,
+		{}
+	)
+
+	return (
+		<Section {...props} className="content-end">
+			<div ref={scope} className="grid-cols grid gap-4 ~pb-0/16">
+				<div ref={titleWrapperRef} className="col-span-2 col-start-2">
+					<h2 className="font-serif ~text-6xl/8xl">
+						<SplitText
+							characterRef={(el, i) => {
+								characterRefs.current[i] = el
+							}}
+						>
+							{title}
+						</SplitText>
+					</h2>
+				</div>
+				<div ref={content1WrapperRef} className="col-start-4 row-start-2">
+					<p ref={content1Ref} className="max-w-prose text-xs text-white/70">
+						{content1}
+					</p>
+				</div>
+				<div ref={content2WrapperRef} className="col-start-5 row-start-2">
+					<p ref={content2Ref} className="max-w-prose text-xs text-white/70">
+						{content2}
+					</p>
+				</div>
 			</div>
 		</Section>
 	)
