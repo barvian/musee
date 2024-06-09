@@ -26,7 +26,7 @@ import { suspend } from 'suspend-react'
 import { MotionValue, cubicBezier, transform, useScroll, useTransform } from 'framer-motion'
 const studio = import('@pmndrs/assets/hdri/studio.exr')
 import { motion } from 'framer-motion-3d'
-import { expoOut } from '@/utils/motion'
+import { expoOut, type MotionVector3, type MotionVector3Tuple } from '@/utils/motion'
 
 extend({
 	Mesh,
@@ -114,9 +114,9 @@ export default function Scene({
 }
 
 type CameraRigProps = {
-	cameraPosition: MotionValue<Vector3Tuple>
-	cameraLookAt: MotionValue<Vector3Tuple>
-	floatIntensity: MotionValue<Vector3Tuple>
+	cameraPosition: MotionVector3Tuple
+	cameraLookAt: MotionVector3Tuple
+	floatIntensity: MotionVector3Tuple
 	floatSpeed?: number
 }
 
@@ -128,14 +128,12 @@ function CameraRig({
 }: CameraRigProps) {
 	useFrame(({ camera, clock }) => {
 		const t = clock.getElapsedTime()
-		const pos = cameraPosition.get()
-		const float = floatIntensity.get()
 		camera.position.set(
-			pos[0] + Math.sin(t * floatSpeed) * float[0],
-			pos[1] + Math.sin(t * floatSpeed) * float[1],
-			pos[2] + Math.sin(t * floatSpeed) * float[2]
+			cameraPosition[0].get() + Math.sin(t * floatSpeed) * floatIntensity[0].get(),
+			cameraPosition[1].get() + Math.sin(t * floatSpeed) * floatIntensity[1].get(),
+			cameraPosition[2].get() + Math.sin(t * floatSpeed) * floatIntensity[2].get()
 		)
-		camera.lookAt(...cameraLookAt.get())
+		camera.lookAt(cameraLookAt[0].get(), cameraLookAt[1].get(), cameraLookAt[2].get())
 	})
 
 	return null

@@ -1,5 +1,5 @@
 import interleave from '@/utils/interleave'
-import { useRef, type ComponentType, type Ref } from 'react'
+import { Fragment, useRef, type ComponentType, type Ref } from 'react'
 
 type SplitTextProps = JSX.IntrinsicElements['span'] & {
 	children: string
@@ -17,7 +17,7 @@ export default function SplitText({ children, characterRef, ...props }: SplitTex
 		<span {...props} aria-label={children}>
 			{words.map((word, w) =>
 				word === ' ' ? (
-					<> </>
+					<Fragment key={w}> </Fragment>
 				) : (
 					<span aria-hidden="true" className="inline-block" key={w}>
 						{word.split('').map((char, c) => (

@@ -29,6 +29,7 @@ import SplitText from '@/components/SplitText'
 import Scene from './Scene'
 import type { Vector3Tuple } from 'three'
 import useMergedProgress from '@/hooks/useMergedProgress'
+import { transformVector3, useMotionVector3, useVector3Spring } from '@/utils/motion'
 
 const cameraPositions: Array<Vector3Tuple> = [
 	[0, 0, 20],
@@ -62,9 +63,10 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
-	const cameraPosition = useMotionValue(cameraPositions[0])
-	const cameraLookAt = useMotionValue(cameraLookAts[0])
-	const floatIntensity = useMotionValue(floatIntensities[0])
+	const cameraPosition = useMotionVector3(cameraPositions[0])
+	const smoothedCameraPosition = useVector3Spring(cameraPosition)
+	const cameraLookAt = useMotionVector3(cameraLookAts[0])
+	const floatIntensity = useMotionVector3(floatIntensities[0])
 
 	// const progress = useMergedProgress(2)
 
@@ -76,16 +78,22 @@ export default function Home() {
 		sectionRefs.current.forEach((ref, curr) => {
 			const prev = Math.max(curr - 1, 0)
 
-			const position = transform([0, 1], [cameraPositions[prev], cameraPositions[curr]])
-			const lookAt = transform([0, 1], [cameraLookAts[prev], cameraLookAts[curr]])
-			const float = transform(
+			const [posX, posY, posZ] = transformVector3(
+				[0, 1],
+				[cameraPositions[prev], cameraPositions[curr]]
+			)
+			const [lookX, lookY, lookZ] = transformVector3(
+				[0, 1],
+				[cameraLookAts[prev], cameraLookAts[curr]]
+			)
+			const [floatX, floatY, floatZ] = transformVector3(
 				[0, 0.1, 0.9, 1], // stop float mid-transition
 				[floatIntensities[prev], ZERO, ZERO, floatIntensities[curr]]
 			)
 			onScrolls.set(ref.current!, (progress: number) => {
-				cameraPosition.set(position(progress))
-				cameraLookAt.set(lookAt(progress))
-				floatIntensity.set(float(progress))
+				cameraPosition.set(posX(progress), posY(progress), posZ(progress))
+				cameraLookAt.set(lookX(progress), lookY(progress), lookZ(progress))
+				floatIntensity.set(floatX(progress), floatY(progress), floatZ(progress))
 			})
 		})
 
@@ -140,7 +148,7 @@ export default function Home() {
 				>
 					<Scene
 						cameraLookAt={cameraLookAt}
-						cameraPosition={cameraPosition}
+						cameraPosition={smoothedCameraPosition}
 						floatIntensity={floatIntensity}
 						className="!fixed !inset-0"
 					/>
@@ -436,7 +444,7 @@ function BottomAlignedSection2({
 			]),
 		inProgress,
 		{
-			// once: true
+			once: true
 		}
 	)
 
