@@ -59,3 +59,70 @@ export const transformVector3 = (inputRange: number[], outputRange: Vector3Tuple
 		outputRange.map((v) => v[2])
 	)
 ]
+
+// Equivalent of Framer Motion's inView that uses a shared IntersectionObserver
+// to avoid race conditions and improve performance.
+
+export type ViewChangeHandler = (entry: IntersectionObserverEntry) => void
+
+export interface InViewOptions {
+	rootMargin?: string
+}
+
+const observers: Record<
+	string,
+	[
+		IntersectionObserver,
+		WeakMap<Element, Array<ViewChangeHandler | void>>,
+		WeakMap<Element, Set<OnStartHandler>>
+	]
+> = {}
+
+type OnStartHandler = (entry: IntersectionObserverEntry) => void | ViewChangeHandler
+
+export function sharedInView(
+	element: Element,
+	onStart: OnStartHandler,
+	{ rootMargin = '0px 0px 0px 0px' }: InViewOptions = {}
+): VoidFunction {
+	const [observer, activeIntersections, handlers] = (observers[rootMargin] ??= [
+		new IntersectionObserver(
+			(entries) => {
+				entries
+					// Handle all non-intersecting elements first, so we can unsubscribe them first
+					.sort((a, b) => (a.isIntersecting === b.isIntersecting ? 0 : !a.isIntersecting ? -1 : 1))
+					.forEach((entry) => {
+						const onEnd = activeIntersections.get(entry.target)
+
+						// If there's no change to the intersection, don't do anything
+						if (entry.isIntersecting === Boolean(onEnd)) return
+
+						if (entry.isIntersecting) {
+							activeIntersections.set(
+								entry.target,
+								[...handlers.get(entry.target)!].map((h) => h(entry))
+							)
+						} else if (onEnd) {
+							onEnd.forEach((h) => h?.(entry)) // call the cleanup functions
+							activeIntersections.delete(entry.target)
+						}
+					})
+			},
+			{
+				rootMargin
+			}
+		),
+		new WeakMap<Element, Array<ViewChangeHandler | void>>(),
+		new WeakMap<Element, Set<ViewChangeHandler>>()
+	])
+
+	observer.observe(element)
+	if (!handlers.has(element)) handlers.set(element, new Set())
+	handlers.get(element)!.add(onStart)
+
+	return () => {
+		activeIntersections.delete(element)
+		handlers.delete(element)
+		observer.unobserve(element)
+	}
+}
