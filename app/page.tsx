@@ -148,8 +148,8 @@ export default function Home() {
 					href="#discovery-of-a-mutilated-masterpiece"
 					sectionRef={sectionRefs.current[2]}
 				/>
-				<TOC.Item sectionRef={sectionRefs.current[3]} />
-				<TOC.Item href="#last" sectionRef={sectionRefs.current[4]} />
+				<TOC.Item href="#missing-arms-mystery" sectionRef={sectionRefs.current[3]} />
+				<TOC.Item href="#an-enigmatic-icon" sectionRef={sectionRefs.current[4]} />
 			</TOC.Root>
 
 			<BottomAlignedSection
@@ -217,49 +217,43 @@ export default function Home() {
 				}
 			/>
 			<LeftAlignedSection
-				id="alexandros-of-antioch-2"
+				id="missing-arms-mystery"
 				ref={sectionRefs.current[3]}
 				onScrollProgress={makeOnScrollProgress(3)}
 				items={[
 					{
-						title: 'Alexandros of Antioch',
+						title: 'Missing Arms Mystery',
 						content: (
 							<>
-								Alexandros of Antioch was an ancient Greek sculptor best known for creating the
-								famous statue discovered on the island of Milos in 1820.
+								One of the most intriguing aspects of the Venus de Milo is its missing arms. When
+								the statue was found, it was already without its arms, which has led to much
+								speculation. It is believed that the arms were broken off either during its
+								discovery or in the centuries it lay buried.
 							</>
 						)
 					},
 					{
-						title: '203 cm (80 in)',
+						title: 'Controversial Identification',
 						content: (
 							<>
-								The height of the statue is notable for its impressive scale, reflecting the
-								grandeur and idealized proportions characteristic of Hellenistic sculpture.
-							</>
-						)
-					},
-					{
-						title: 'Island of Melos',
-						content: (
-							<>
-								The Venus de Milo was discovered in 1820 by a Greek farmer named Yorgos Kentrotas on
-								the island of Milos, and it quickly became one of the most celebrated examples of
-								ancient Greek sculpture.
+								While widely accepted as a depiction of Aphrodite, the identification of the Venus
+								de Milo has been a subject of debate. Some scholars have suggested alternative
+								identifications, such as the sea goddess Amphitrite, who was also venerated on the
+								island of Milos.
 							</>
 						)
 					}
 				]}
 			/>
 			<BottomAlignedSection
-				title="Museum of Ancient Arts"
-				id="last"
+				title="An enigmatic icon"
+				id="an-enigmatic-icon"
 				ref={sectionRefs.current[4]}
 				onScrollProgress={makeOnScrollProgress(4)}
 			>
-				History and creativity converge to tell the captivating stories of civilizations long past.
-				Our collection, ranging from majestic sculptures to intricate pottery, offers a glimpse into
-				the artistic achievements and cultural expressions of ancient societies.
+				Renowned for its classical beauty and the mystery of its missing arms, the Venus de Milo
+				captivates millions of admirers each year. This iconic sculpture has become a centerpiece of
+				the Louvre Museum, symbolizing the artistic brilliance of ancient Greece.
 			</BottomAlignedSection>
 		</>
 	)
