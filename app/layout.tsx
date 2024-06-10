@@ -80,10 +80,10 @@ export default function RootLayout({
 function Guides() {
 	return (
 		<div className="pointer-events-none fixed inset-0 z-50 size-full">
-			<div className="grid-guides container relative grid h-full">
-				<div className="max-guides-4:hidden border-r border-white/10"></div>
-				<div className="max-guides-4:hidden border-r border-white/10"></div>
+			<div className="grid-guides container max-guides-4:~px-6/8 relative grid h-full">
+				<div className="max-guides-4:border-l border-r border-white/10"></div>
 				<div className="border-r border-white/10"></div>
+				<div className="max-guides-4:hidden border-r border-white/10"></div>
 				<div className="max-guides-5:hidden border-r border-white/10"></div>
 			</div>
 		</div>
