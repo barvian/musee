@@ -251,7 +251,7 @@ export default function Home() {
 					}
 				]}
 			/>
-			<BottomAlignedSection
+			<BottomAlignedSectionWithIntro
 				title="An enigmatic icon"
 				id="an-enigmatic-icon"
 				ref={sectionRefs.current[4]}
@@ -260,7 +260,7 @@ export default function Home() {
 				Renowned for its classical beauty and the mystery of its missing arms, the Venus de Milo
 				captivates millions of admirers each year. This iconic sculpture has become a centerpiece of
 				the Louvre Museum, symbolizing the artistic brilliance of ancient Greece.
-			</BottomAlignedSection>
+			</BottomAlignedSectionWithIntro>
 		</>
 	)
 }
@@ -292,6 +292,70 @@ function BottomAlignedSection({
 					{title}
 				</TitleTag>
 				<p className="guides-4:col-start-2 guides-4:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:col-span-2 guides-5:lg:col-span-1 col-span-2 max-w-prose justify-self-center text-sm text-white/70">
+					{children}
+				</p>
+			</motion.div>
+		</Section>
+	)
+}
+
+function BottomAlignedSectionWithIntro({
+	title,
+	TitleTag = 'h2',
+	className,
+	children,
+	...props
+}: BottomAlignedSectionProps) {
+	const [scope, animate] = useAnimate<HTMLDivElement>()
+
+	const characterRefs = useRef<Array<HTMLSpanElement | null>>([])
+	const contentRef = useRef<HTMLParagraphElement>(null)
+
+	// Entrance animations
+	const { scrollYProgress: _inProgress } = useScroll({
+		target: scope,
+		offset: ['start end', 'end end']
+	})
+	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const inProgress = useSpring(_inProgress, spring)
+	useScrubber(
+		() =>
+			animate([
+				[
+					characterRefs.current.filter(Boolean),
+					{ opacity: [0, 1], y: ['25%', '0'] },
+					{ duration: 0.35, delay: stagger(0.035, { startDelay: 0.35 }) }
+				],
+				[contentRef.current!, { opacity: [0, 1], y: ['75%', '0'] }, { duration: 0.75, at: '-1' }]
+			]),
+		inProgress,
+		{
+			once: process.env.NODE_ENV !== 'development'
+		}
+	)
+
+	const { scrollYProgress } = useScroll({
+		target: scope,
+		offset: ['end 55%', 'end 35%']
+	})
+	const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
+
+	return (
+		<Section className={clsx('content-end', className)} {...props}>
+			<motion.div style={{ opacity }} ref={scope} className="grid-guides grid gap-4">
+				<TitleTag className="guides-4:col-start-2 guides-4:col-span-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem] col-span-2 font-serif ~text-5xl/8xl">
+					<SplitText
+						characterRef={(el, index) => {
+							characterRefs.current[index] = el
+						}}
+					>
+						{title}
+					</SplitText>
+				</TitleTag>
+				<p
+					ref={contentRef}
+					className="guides-4:col-start-2 guides-4:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:col-span-2 guides-5:lg:col-span-1 col-span-2 max-w-prose justify-self-center text-sm text-white/70"
+				>
 					{children}
 				</p>
 			</motion.div>
@@ -423,7 +487,7 @@ function BottomAlignedSection2({
 	// Entrance animations
 	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
-		offset: ['start end', 'end end'] // 55% = compensate for the header
+		offset: ['start end', 'end end']
 	})
 	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
 	const inProgress = useSpring(_inProgress, spring)
