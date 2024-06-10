@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useScroll, useTransform, motion } from 'framer-motion'
 import type { RefObject } from 'react'
-import colors from 'tailwindcss/colors'
+import { colors } from '@/theme'
 
 export function Root({ children, className, ...props }: JSX.IntrinsicElements['nav']) {
 	return (

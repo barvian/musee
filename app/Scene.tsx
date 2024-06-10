@@ -18,15 +18,15 @@ import {
 	CanvasTexture,
 	type Vector3Tuple
 } from 'three'
-import { OrbitControls, Torus, useEnvironment, useGLTF } from '@react-three/drei'
+import { OrbitControls, Torus, useEnvironment, useGLTF, useProgress } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
 import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 import { Suspense, useEffect } from 'react'
 import { suspend } from 'suspend-react'
-import { MotionValue, cubicBezier, transform, useScroll, useTransform } from 'framer-motion'
 const studio = import('@pmndrs/assets/hdri/studio.exr')
 import { motion } from 'framer-motion-3d'
 import { expoOut, type MotionVector3, type MotionVector3Tuple } from '@/utils/motion'
+import { useControls } from 'leva'
 
 extend({
 	Mesh,
@@ -50,15 +50,19 @@ export default function Scene({
 	floatSpeed,
 	...props
 }: CameraRigProps & Omit<CanvasProps, 'children'>) {
-	const light = new EllipseCurve(0, 0, 10, 10, 0, 2 * Math.PI, false, 0)
+	// Write it this way so it gets tree shaken:
+	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control
+
 	return (
 		<Canvas {...props} camera={{ position: [20, 0, -5], fov: 8 }}>
-			<CameraRig
-				cameraLookAt={cameraLookAt}
-				cameraPosition={cameraPosition}
-				floatIntensity={floatIntensity}
-				floatSpeed={floatSpeed}
-			/>
+			{!control && (
+				<CameraRig
+					cameraLookAt={cameraLookAt}
+					cameraPosition={cameraPosition}
+					floatIntensity={floatIntensity}
+					floatSpeed={floatSpeed}
+				/>
+			)}
 			<RadialGradientTexture
 				attach="background"
 				stops={stops} // As many stops as you want
@@ -68,17 +72,19 @@ export default function Scene({
 				size={1024} // Size (height) is optional, default = 1024
 			/>
 			<Suspense fallback={null}>
+				{/* @ts-expect-error hopefully an issue with RC 19 */}
 				<motion.group
 					initial={{ y: -3 }}
 					animate={{ y: 0 }}
 					transition={{ ease: expoOut, duration: 1 }}
 				>
-					<Venus position={[0, -2.25, 0]} rotation-y={0.425} />
+					<Venus position={[0, -2.3, 0]} rotation-y={0.45} />
 					{/* <Box /> */}
-					<Torus args={[1.2, 0.075]} rotation={[0.2, 0, 0]} position={[0, -0.25, -2.5]}>
+					<Torus args={[1, 0.075]} rotation={[0.2, 0, 0]} position={[-0.25, -0.125, -2.5]}>
 						<meshStandardMaterial emissive={'#fff'} emissiveIntensity={1.5} />
 					</Torus>
 					<pointLight position={[0, 0, -2]} decay={0.5} intensity={2} />
+					{/* @ts-expect-error " */}
 				</motion.group>
 			</Suspense>
 			<EffectComposer multisampling={0} enableNormalPass={false}>
@@ -108,7 +114,14 @@ export default function Scene({
 				<Noise opacity={0.025} />
 				<Vignette offset={0} darkness={0.75} />
 			</EffectComposer>
-			{/* <OrbitControls /> */}
+			{process.env.NODE_ENV === 'development' && control && (
+				<OrbitControls
+					// @ts-expect-error weird type issue
+					onChange={(event) => {
+						console.log(event.target.object)
+					}}
+				/>
+			)}
 		</Canvas>
 	)
 }
@@ -150,6 +163,7 @@ type GLTFResult = GLTF & {
 
 function Venus(props: ThreeElements['group']) {
 	const { nodes, materials } = useGLTF('/venus.glb') as GLTFResult
+	// @ts-expect-error weird suspend types
 	const envMap = useEnvironment({ files: suspend(studio).default })
 
 	applyProps(materials['Scene_-_Root'], {

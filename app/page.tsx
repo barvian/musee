@@ -28,26 +28,27 @@ import Scene from './Scene'
 import type { Vector3Tuple } from 'three'
 import { sharedInView, transformVector3, useMotionVector3, useVector3Spring } from '@/utils/motion'
 import { useControls } from 'leva'
+import type { Metadata } from 'next'
 
 const cameraPositions: Array<Vector3Tuple> = [
 	[0, 0, 20],
 	[20, 0, 0],
-	[0, 0, 20],
-	[20, 0, -5],
+	[0, 5, 15],
+	[-1.25, -15, 24.4],
 	[0, 0, 20]
 ]
 const cameraLookAts: Array<Vector3Tuple> = [
-	[0, 0, 0],
+	[-0.15, 0, 0],
 	[0, 0, 1.175],
-	[0, 0, 0],
-	[0, 0, 0],
-	[0, 0, 0]
+	[-0.5, -0.7, -2],
+	[-1.8, -1.2, 0],
+	[-0.15, 0, 0]
 ]
 const floatIntensities: Array<Vector3Tuple> = [
 	[1, 0, 0],
 	[0, 0, 1],
-	[0, 0, 0],
-	[0, 0, 0],
+	[0.5, 0, 0],
+	[1, 0, 0.2],
 	[0, 0, 0]
 ]
 
@@ -170,7 +171,7 @@ export default function Home() {
 						content: (
 							<>
 								Alexandros of Antioch was an ancient Greek sculptor best known for creating the
-								famous statue "Venus de Milo," discovered on the island of Milos in 1820.
+								famous statue &quot;Venus de Milo,&quot; discovered on the island of Milos in 1820.
 							</>
 						)
 					},
@@ -214,33 +215,58 @@ export default function Home() {
 					</>
 				}
 			/>
-			<Section ref={sectionRefs.current[3]} onScrollProgress={makeOnScrollProgress(3)}>
-				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
-					Museum of Ancient Art
-				</h1>
-				<p className="justify-self-center text-sm ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
-					History and creativity converge to tell the captivating stories of civilizations long
-					past. Our collection, ranging from majestic sculptures to intricate pottery, offers a
-					glimpse into the artistic achievements and cultural expressions of ancient societies.
-				</p>
-			</Section>
-			<Section id="last" ref={sectionRefs.current[4]} onScrollProgress={makeOnScrollProgress(4)}>
-				<h1 className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
-					Museum of Ancient Art
-				</h1>
-				<p className="justify-self-center text-sm ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
-					History and creativity converge to tell the captivating stories of civilizations long
-					past. Our collection, ranging from majestic sculptures to intricate pottery, offers a
-					glimpse into the artistic achievements and cultural expressions of ancient societies.
-				</p>
-			</Section>
+			<LeftAlignedSection
+				id="alexandros-of-antioch-2"
+				ref={sectionRefs.current[3]}
+				onScrollProgress={makeOnScrollProgress(3)}
+				items={[
+					{
+						title: 'Alexandros of Antioch',
+						content: (
+							<>
+								Alexandros of Antioch was an ancient Greek sculptor best known for creating the
+								famous statue discovered on the island of Milos in 1820.
+							</>
+						)
+					},
+					{
+						title: '203 cm (80 in)',
+						content: (
+							<>
+								The height of the statue is notable for its impressive scale, reflecting the
+								grandeur and idealized proportions characteristic of Hellenistic sculpture.
+							</>
+						)
+					},
+					{
+						title: 'Island of Melos',
+						content: (
+							<>
+								The Venus de Milo was discovered in 1820 by a Greek farmer named Yorgos Kentrotas on
+								the island of Milos, and it quickly became one of the most celebrated examples of
+								ancient Greek sculpture.
+							</>
+						)
+					}
+				]}
+			/>
+			<BottomAlignedSection
+				title="Museum of Ancient Arts"
+				id="last"
+				ref={sectionRefs.current[4]}
+				onScrollProgress={makeOnScrollProgress(4)}
+			>
+				History and creativity converge to tell the captivating stories of civilizations long past.
+				Our collection, ranging from majestic sculptures to intricate pottery, offers a glimpse into
+				the artistic achievements and cultural expressions of ancient societies.
+			</BottomAlignedSection>
 		</>
 	)
 }
 
 type BottomAlignedSectionProps = SectionProps & {
 	title: string
-	TitleTag: 'h1' | 'h2'
+	TitleTag?: 'h1' | 'h2'
 }
 
 function BottomAlignedSection({
@@ -260,11 +286,11 @@ function BottomAlignedSection({
 
 	return (
 		<Section className={clsx('content-end', className)} {...props}>
-			<motion.div style={{ opacity }} ref={innerRef} className="grid-cols grid gap-4">
-				<TitleTag className="col-span-3 justify-self-end text-right font-serif ~text-6xl/8xl md:~md:~max-w-[20rem]/[28.75rem]">
+			<motion.div style={{ opacity }} ref={innerRef} className="grid-guides grid gap-4">
+				<TitleTag className="guides-3:col-start-2 guides-3:col-span-2 guides-4:col-span-3 guides-4:justify-self-end guides-4:text-right guides-4:~guides-4:~max-w-[20rem]/[28.75rem] font-serif ~text-5xl/8xl">
 					{title}
 				</TitleTag>
-				<p className="justify-self-center text-sm text-white/70 ~lg:~mt-8/16 ~lg:~p-4/8 max-lg:col-span-2">
+				<p className="guides-3:col-start-2 guides-3:col-span-2 guides-4:~lg:~mt-8/16 guides-4:~lg:~p-4/8 guides-4:col-span-2 guides-4:lg:col-span-1 max-w-prose justify-self-center text-sm text-white/70">
 					{children}
 				</p>
 			</motion.div>
@@ -318,7 +344,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 			),
 		inProgress,
 		{
-			once: true
+			once: process.env.NODE_ENV !== 'development'
 		}
 	)
 
@@ -341,7 +367,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	)
 
 	return (
-		<Section {...props} className="grid-cols grid content-center items-center gap-4">
+		<Section {...props} className="grid-guides grid content-center items-center gap-4">
 			<div ref={scope} className="col-span-2 col-start-2">
 				<dl className="~space-y-6/12">
 					{items.map(({ title, content }, i) => (
@@ -420,7 +446,7 @@ function BottomAlignedSection2({
 			]),
 		inProgress,
 		{
-			once: true
+			once: process.env.NODE_ENV !== 'development'
 		}
 	)
 
@@ -432,16 +458,26 @@ function BottomAlignedSection2({
 	useScrubber(
 		() =>
 			// Framer Motion doesn't compute the right duration unless it's in a sequence:
-			animate([[titleWrapperRef.current!, { opacity: [1, 0] }, { duration: 0.5 }]]),
+			animate([
+				[titleWrapperRef.current!, { opacity: [1, 0] }, { duration: 0.5 }],
+				[
+					[content1WrapperRef.current!, content2WrapperRef.current!],
+					{ opacity: [1, 0] },
+					{ duration: 0.5, at: 0.15 }
+				]
+			]),
 		outProgress,
 		{}
 	)
 
 	return (
 		<Section {...props} className="content-end">
-			<div ref={scope} className="grid-cols grid gap-4 ~pb-0/16">
-				<div ref={titleWrapperRef} className="col-span-2 col-start-2">
-					<h2 className="font-serif ~text-6xl/8xl">
+			<div ref={scope} className="grid-guides grid gap-4">
+				<div
+					ref={titleWrapperRef}
+					className="guides-4:max-lg:col-span-3 guides-4:max-lg:col-start-2 col-span-2 col-start-2"
+				>
+					<h2 className="font-serif ~text-5xl/8xl">
 						<SplitText
 							characterRef={(el, i) => {
 								characterRefs.current[i] = el
@@ -451,12 +487,18 @@ function BottomAlignedSection2({
 						</SplitText>
 					</h2>
 				</div>
-				<div ref={content1WrapperRef} className="col-start-4 row-start-2">
+				<div
+					ref={content1WrapperRef}
+					className="guides-4:lg:col-start-4 guides-4:max-lg:col-start-2 guides-4:col-span-1 guides-4:max-lg:col-span-2 col-start-2 row-start-2"
+				>
 					<p ref={content1Ref} className="max-w-prose text-xs text-white/70">
 						{content1}
 					</p>
 				</div>
-				<div ref={content2WrapperRef} className="col-start-5 row-start-2">
+				<div
+					ref={content2WrapperRef}
+					className="guides-4:lg:col-start-5 guides-4:max-lg:col-start-4 guides-4:col-span-1 guides-4:max-lg:col-span-2 col-start-3 row-start-2"
+				>
 					<p ref={content2Ref} className="max-w-prose text-xs text-white/70">
 						{content2}
 					</p>
@@ -474,6 +516,9 @@ type SectionProps = JSX.IntrinsicElements['section'] & {
 function Section({ children, ref, onScrollProgress, className, ...props }: SectionProps) {
 	const innerRef = useRef<HTMLElement>(null)
 	useImperativeHandle(ref, () => innerRef.current!, [])
+
+	// Write it this way so it gets tree shaken:
+	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control
 
 	// Track scroll progress while in view
 	useLayoutEffect(() => {
@@ -496,6 +541,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 			{...props}
 			ref={innerRef}
 			className={clsx(
+				control && 'pointer-events-none',
 				'container relative min-h-screen snap-start pt-[--header-height] ~pb-6/16',
 				className
 			)}

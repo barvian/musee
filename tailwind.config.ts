@@ -2,6 +2,7 @@ import type { Config } from 'tailwindcss'
 import fluid, { extract, fontSize } from 'fluid-tailwind'
 import reset from 'tw-reset'
 import plugin from 'tailwindcss/plugin'
+import { colors } from './theme'
 
 export default {
 	presets: [reset],
@@ -14,9 +15,12 @@ export default {
 	},
 	theme: {
 		fontSize,
+		colors,
 		extend: {
 			screens: {
 				xs: '20rem',
+				'guides-3': '34rem',
+				'guides-4': '44rem',
 				md: '44rem',
 				'2xl': '90rem'
 			},

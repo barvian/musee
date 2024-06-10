@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @layer utilities {
-	.grid-cols {
-		grid-template-columns: 1fr 1.3fr 1.45fr 1.3fr 1fr;
+	.grid-guides {
+		@apply guides-3:grid-cols-[1fr_1.45fr_1.45fr_1fr] guides-4:grid-cols-[1fr_1.3fr_1.45fr_1.3fr_1fr];
 	}
 }
 
 @layer components {
 	.container {
-		@apply max-w-8xl mx-auto w-full ~px-5/10;
+		@apply mx-auto w-full max-w-8xl ~px-5/10;
 	}
 }

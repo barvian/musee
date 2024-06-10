@@ -26,16 +26,9 @@ export default function RootLayout({
 				className="~header-padding-[theme(padding.6)]/[theme(padding.12)]"
 				style={{ '--header-height': 'calc(var(--header-padding) * 2 + 1.375rem)' }}
 			>
-				<div className="pointer-events-none fixed inset-0 z-50 size-full">
-					<div className="grid-cols container relative grid h-full">
-						<div className="border-r border-white/10"></div>
-						<div className="border-r border-white/10"></div>
-						<div className="border-r border-white/10"></div>
-						<div className="border-r border-white/10"></div>
-					</div>
-				</div>
+				<Guides />
 				<header className="fixed top-0 z-10 w-full py-[--header-padding]">
-					<div className="grid-cols container flex items-center justify-between gap-4 md:grid">
+					<div className="grid-guides container flex items-center justify-between gap-4 md:grid">
 						<svg
 							width="77"
 							height="21"
@@ -81,5 +74,18 @@ export default function RootLayout({
 				{children}
 			</body>
 		</html>
+	)
+}
+
+function Guides() {
+	return (
+		<div className="pointer-events-none fixed inset-0 z-50 size-full">
+			<div className="grid-guides container relative grid h-full">
+				<div className="border-r border-white/10"></div>
+				<div className="border-r border-white/10"></div>
+				<div className="guides-3:block hidden border-r border-white/10"></div>
+				<div className="guides-4:block hidden border-r border-white/10"></div>
+			</div>
+		</div>
 	)
 }
