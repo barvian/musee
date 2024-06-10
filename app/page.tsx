@@ -28,7 +28,18 @@ import Scene from './Scene'
 import type { Vector3Tuple } from 'three'
 import { sharedInView, transformVector3, useMotionVector3, useVector3Spring } from '@/utils/motion'
 import { useControls } from 'leva'
-import type { Metadata } from 'next'
+
+const SPRING = {
+	stiffness: 100,
+	damping: 25,
+	mass: 1
+}
+
+const SCENE_SPRING = {
+	stiffness: 100,
+	damping: 40,
+	mass: 1
+}
 
 const cameraPositions: Array<Vector3Tuple> = [
 	[0, 0, 20],
@@ -41,7 +52,7 @@ const cameraLookAts: Array<Vector3Tuple> = [
 	[-0.15, 0, 0],
 	[0, 0, 1.05],
 	[-0.5, -0.7, -2],
-	[-2, -0.5, 0],
+	[-2.15, -0.5, 0],
 	[-0.25, -0.1, 0]
 ]
 const floatIntensities: Array<Vector3Tuple> = [
@@ -62,20 +73,15 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
-	const { stiffness, damping, mass } = useControls('scene', {
-		// stiffness: 150,
-		// damping: 70,
-		stiffness: 100,
-		damping: 40,
-		mass: 1
-	})
+	const spring =
+		process.env.NODE_ENV !== 'development' ? SCENE_SPRING : useControls('scene', SCENE_SPRING) // eslint-disable-line react-hooks/rules-of-hooks
 
 	const cameraPosition = useMotionVector3(cameraPositions[0])
-	const smoothedCameraPosition = useVector3Spring(cameraPosition, { stiffness, damping, mass })
+	const smoothedCameraPosition = useVector3Spring(cameraPosition, spring)
 	const cameraLookAt = useMotionVector3(cameraLookAts[0])
-	const smoothedCameraLookAt = useVector3Spring(cameraLookAt, { stiffness, damping, mass })
+	const smoothedCameraLookAt = useVector3Spring(cameraLookAt, spring)
 	const floatIntensity = useMotionVector3(floatIntensities[0])
-	const smoothedFloatIntensity = useVector3Spring(floatIntensity, { stiffness, damping, mass })
+	const smoothedFloatIntensity = useVector3Spring(floatIntensity, spring)
 
 	// const progress = useMergedProgress(2)
 
@@ -311,16 +317,12 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	const contentRefs = useRef(Array<HTMLElement | null>(items.length))
 
 	// Entrance animations
-	const { stiffness, damping, mass } = useControls({
-		stiffness: 100,
-		damping: 25,
-		mass: 1
-	})
+	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
 	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
 		offset: ['start 80%', 'center 55%'] // 55% = compensate for the header
 	})
-	const inProgress = useSpring(_inProgress, { stiffness, damping, mass })
+	const inProgress = useSpring(_inProgress, spring)
 	useScrubber(
 		() =>
 			animate(
@@ -423,12 +425,8 @@ function BottomAlignedSection2({
 		target: scope,
 		offset: ['start end', 'end end'] // 55% = compensate for the header
 	})
-	const { stiffness, damping, mass } = useControls({
-		stiffness: 100,
-		damping: 25,
-		mass: 1
-	})
-	const inProgress = useSpring(_inProgress, { stiffness, damping, mass })
+	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const inProgress = useSpring(_inProgress, spring)
 	useScrubber(
 		() =>
 			animate([
@@ -513,7 +511,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 	useImperativeHandle(ref, () => innerRef.current!, [])
 
 	// Write it this way so it gets tree shaken:
-	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control
+	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control // eslint-disable-line react-hooks/rules-of-hooks
 
 	// Track scroll progress while in view
 	useLayoutEffect(() => {

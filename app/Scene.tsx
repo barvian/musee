@@ -5,28 +5,24 @@ import {
 	applyProps,
 	type ThreeElements,
 	useThree,
-	type Vector2,
 	useFrame
 } from '@react-three/fiber'
-import {
-	Mesh,
-	Group,
-	MeshStandardMaterial,
-	EllipseCurve,
-	TorusGeometry,
-	PointLight,
-	CanvasTexture,
-	type Vector3Tuple
-} from 'three'
+import { Mesh, Group, MeshStandardMaterial, TorusGeometry, PointLight, CanvasTexture } from 'three'
 import { OrbitControls, Torus, useEnvironment, useGLTF, useProgress } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
 import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import { suspend } from 'suspend-react'
 const studio = import('@pmndrs/assets/hdri/studio.exr')
 import { motion } from 'framer-motion-3d'
 import { expoOut, type MotionVector3, type MotionVector3Tuple } from '@/utils/motion'
 import { useControls } from 'leva'
+import { useMotionValue, useSpring, type SpringOptions } from 'framer-motion'
+import useMergedProgress from '@/hooks/useMergedProgress'
+
+const SPRING: SpringOptions = {
+	bounce: 0
+}
 
 extend({
 	Mesh,
@@ -37,7 +33,7 @@ extend({
 	MeshStandardMaterial
 })
 
-// Eased
+// Eased:
 // prettier-ignore
 const colors = ['#1f2022', '#1f2022', '#1e1f21', '#1d1d1f', '#1b1c1d', '#19191b', '#161718', '#131415', '#101112', '#0d0d0e', '#0a0a0a', '#070707', '#050505']
 // prettier-ignore
@@ -51,7 +47,7 @@ export default function Scene({
 	...props
 }: CameraRigProps & Omit<CanvasProps, 'children'>) {
 	// Write it this way so it gets tree shaken:
-	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control
+	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control // eslint-disable-line react-hooks/rules-of-hooks
 
 	return (
 		<Canvas {...props} camera={{ position: [20, 0, -5], fov: 8 }}>
@@ -65,14 +61,15 @@ export default function Scene({
 			)}
 			<RadialGradientTexture
 				attach="background"
-				stops={stops} // As many stops as you want
+				stops={stops}
 				colors={colors} // Colors need to match the number of stops
 				radius={614}
 				gradientCenter={[814, 400]}
-				size={1024} // Size (height) is optional, default = 1024
+				size={1024}
 			/>
+			<Light />
 			<Suspense fallback={null}>
-				{/* @ts-expect-error hopefully an issue with RC 19 */}
+				{/* @ts-expect-error hopefully just an issue with React 19 RC */}
 				<motion.group
 					initial={{ y: -3 }}
 					animate={{ y: 0 }}
@@ -80,9 +77,6 @@ export default function Scene({
 				>
 					<Venus position={[0, -2.3, 0]} rotation-y={0.45} />
 					{/* <Box /> */}
-					<Torus args={[1, 0.075]} rotation={[0.2, 0, 0]} position={[-0.25, -0.125, -2.5]}>
-						<meshStandardMaterial emissive={'#fff'} emissiveIntensity={1.5} />
-					</Torus>
 					<pointLight position={[0, 0, -2]} decay={0.5} intensity={2} />
 					{/* @ts-expect-error " */}
 				</motion.group>
@@ -150,6 +144,41 @@ function CameraRig({
 	})
 
 	return null
+}
+
+// Light/loader
+function Light() {
+	const ref = useRef<Mesh>(null)
+
+	const progress = useMergedProgress(2)
+	const motionProgress = useMotionValue(0)
+	useEffect(() => {
+		motionProgress.set(progress)
+	}, [progress])
+	const smoothedMotionProgress = useSpring(motionProgress, SPRING)
+
+	useFrame(() => {
+		if (smoothedMotionProgress.get() >= 100) return
+		ref.current?.geometry.dispose()
+		ref.current!.geometry = new TorusGeometry(
+			1,
+			0.075,
+			12,
+			48,
+			Math.PI * 2 * (smoothedMotionProgress.get() / 100) + 0.01 // 0.01 = margin of error for spring
+		)
+	})
+
+	return (
+		<Torus
+			args={[1, 0.075, 12, 48, 0]}
+			ref={ref}
+			rotation={[Math.PI + 0.2, 0, Math.PI]} // flip it for a more normal loading animation
+			position={[-0.25, -0.125, -2.5]}
+		>
+			<meshStandardMaterial emissive={'#fff'} emissiveIntensity={1.5} />
+		</Torus>
+	)
 }
 
 type GLTFResult = GLTF & {
