@@ -327,7 +327,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 				items.flatMap((_, i) => [
 					[
 						characterRefs.current[i].filter(Boolean),
-						{ opacity: [0, 1], y: ['37.5%', '0'] },
+						{ opacity: [0, 1], y: ['25%', '0'] },
 						{ duration: 0.35, delay: stagger(0.035), at: i * 0.25 }
 					],
 					[
@@ -434,7 +434,7 @@ function BottomAlignedSection2({
 			animate([
 				[
 					characterRefs.current.filter(Boolean),
-					{ opacity: [0, 1], y: ['37.5%', '0'] },
+					{ opacity: [0, 1], y: ['25%', '0'] },
 					{ duration: 0.35, delay: stagger(0.035, { startDelay: 0.35 }) }
 				],
 				[content2Ref.current!, { opacity: [0, 1], y: ['75%', '0'] }, { duration: 0.75, at: '-1' }]
