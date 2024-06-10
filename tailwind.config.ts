@@ -19,8 +19,8 @@ export default {
 		extend: {
 			screens: {
 				xs: '20rem',
-				'guides-3': '34rem',
-				'guides-4': '44rem',
+				'guides-4': '36rem',
+				'guides-5': '44rem',
 				md: '44rem',
 				'2xl': '90rem'
 			},
@@ -45,14 +45,22 @@ export default {
 	},
 	plugins: [
 		fluid,
-		plugin(({ matchUtilities }) => {
+		plugin(({ matchUtilities, theme }) => {
 			matchUtilities(
 				{
-					'header-padding': (val) => ({
-						'--header-padding': val
+					'header-p': (val) => ({
+						'--header-p': val
 					})
 				},
-				{ values: {} }
+				{ values: theme('padding') }
+			)
+			matchUtilities(
+				{
+					'section-pt': (val) => ({
+						'--section-pt': val
+					})
+				},
+				{ values: theme('padding') }
 			)
 		})
 	]

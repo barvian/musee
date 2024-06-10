@@ -4,12 +4,12 @@
 
 @layer utilities {
 	.grid-guides {
-		@apply guides-3:grid-cols-[1fr_1.45fr_1.45fr_1fr] guides-4:grid-cols-[1fr_1.3fr_1.45fr_1.3fr_1fr];
+		@apply guides-5:grid-cols-[1fr_1.3fr_1.45fr_1.3fr_1fr] guides-4:grid-cols-[1fr_1.45fr_1.45fr_1fr] grid-cols-2;
 	}
 }
 
 @layer components {
 	.container {
-		@apply mx-auto w-full max-w-8xl ~px-5/10;
+		@apply mx-auto w-full max-w-8xl ~px-8/10;
 	}
 }

@@ -34,22 +34,22 @@ const cameraPositions: Array<Vector3Tuple> = [
 	[0, 0, 20],
 	[20, 0, 0],
 	[0, 5, 15],
-	[-1.25, -15, 24.4],
-	[0, 0, 20]
+	[21.775, -4.44, 18.33],
+	[8.36, 4.93, 10]
 ]
 const cameraLookAts: Array<Vector3Tuple> = [
 	[-0.15, 0, 0],
-	[0, 0, 1.175],
+	[0, 0, 1.05],
 	[-0.5, -0.7, -2],
-	[-1.8, -1.2, 0],
-	[-0.15, 0, 0]
+	[-2, -0.5, 0],
+	[-0.25, -0.1, 0]
 ]
 const floatIntensities: Array<Vector3Tuple> = [
 	[1, 0, 0],
 	[0, 0, 1],
 	[0.5, 0, 0],
-	[1, 0, 0.2],
-	[0, 0, 0]
+	[1, 0, 0],
+	[0.75, 0, 0]
 ]
 
 const ZERO: Vector3Tuple = [0, 0, 0]
@@ -75,6 +75,7 @@ export default function Home() {
 	const cameraLookAt = useMotionVector3(cameraLookAts[0])
 	const smoothedCameraLookAt = useVector3Spring(cameraLookAt, { stiffness, damping, mass })
 	const floatIntensity = useMotionVector3(floatIntensities[0])
+	const smoothedFloatIntensity = useVector3Spring(floatIntensity, { stiffness, damping, mass })
 
 	// const progress = useMergedProgress(2)
 
@@ -111,7 +112,7 @@ export default function Home() {
 					<Scene
 						cameraLookAt={smoothedCameraLookAt}
 						cameraPosition={smoothedCameraPosition}
-						floatIntensity={floatIntensity}
+						floatIntensity={smoothedFloatIntensity}
 						className="!fixed !inset-0"
 					/>
 				</motion.div>
@@ -136,7 +137,7 @@ export default function Home() {
 					</Progress.Root>
 				)}
 			</AnimatePresence> */}
-			<TOC.Root>
+			<TOC.Root className="max-guides-4:hidden">
 				<TOC.Item title="Museum of Ancient Art" href="#" sectionRef={sectionRefs.current[0]} />
 				<TOC.Item
 					title="Alexandros of Antioch"
@@ -287,10 +288,10 @@ function BottomAlignedSection({
 	return (
 		<Section className={clsx('content-end', className)} {...props}>
 			<motion.div style={{ opacity }} ref={innerRef} className="grid-guides grid gap-4">
-				<TitleTag className="guides-3:col-start-2 guides-3:col-span-2 guides-4:col-span-3 guides-4:justify-self-end guides-4:text-right guides-4:~guides-4:~max-w-[20rem]/[28.75rem] font-serif ~text-5xl/8xl">
+				<TitleTag className="guides-4:col-start-2 guides-4:col-span-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem] col-span-2 font-serif ~text-5xl/8xl">
 					{title}
 				</TitleTag>
-				<p className="guides-3:col-start-2 guides-3:col-span-2 guides-4:~lg:~mt-8/16 guides-4:~lg:~p-4/8 guides-4:col-span-2 guides-4:lg:col-span-1 max-w-prose justify-self-center text-sm text-white/70">
+				<p className="guides-4:col-start-2 guides-4:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:col-span-2 guides-5:lg:col-span-1 col-span-2 max-w-prose justify-self-center text-sm text-white/70">
 					{children}
 				</p>
 			</motion.div>
@@ -368,7 +369,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 
 	return (
 		<Section {...props} className="grid-guides grid content-center items-center gap-4">
-			<div ref={scope} className="col-span-2 col-start-2">
+			<div ref={scope} className="guides-4:col-start-2 col-span-2">
 				<dl className="~space-y-6/12">
 					{items.map(({ title, content }, i) => (
 						<div
@@ -475,7 +476,7 @@ function BottomAlignedSection2({
 			<div ref={scope} className="grid-guides grid gap-4">
 				<div
 					ref={titleWrapperRef}
-					className="guides-4:max-lg:col-span-3 guides-4:max-lg:col-start-2 col-span-2 col-start-2"
+					className="guides-5:max-lg:col-span-3 guides-5:max-lg:col-start-2 guides-4:col-start-2 col-span-2"
 				>
 					<h2 className="font-serif ~text-5xl/8xl">
 						<SplitText
@@ -489,7 +490,7 @@ function BottomAlignedSection2({
 				</div>
 				<div
 					ref={content1WrapperRef}
-					className="guides-4:lg:col-start-4 guides-4:max-lg:col-start-2 guides-4:col-span-1 guides-4:max-lg:col-span-2 col-start-2 row-start-2"
+					className="guides-5:lg:col-start-4 guides-5:max-lg:col-start-2 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-4:col-start-2 guides-4:row-start-2"
 				>
 					<p ref={content1Ref} className="max-w-prose text-xs text-white/70">
 						{content1}
@@ -497,7 +498,7 @@ function BottomAlignedSection2({
 				</div>
 				<div
 					ref={content2WrapperRef}
-					className="guides-4:lg:col-start-5 guides-4:max-lg:col-start-4 guides-4:col-span-1 guides-4:max-lg:col-span-2 col-start-3 row-start-2"
+					className="guides-5:lg:col-start-5 guides-5:max-lg:col-start-4 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-4:col-start-3 guides-4:row-start-2"
 				>
 					<p ref={content2Ref} className="max-w-prose text-xs text-white/70">
 						{content2}
@@ -542,7 +543,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 			ref={innerRef}
 			className={clsx(
 				control && 'pointer-events-none',
-				'container relative min-h-screen snap-start pt-[--header-height] ~pb-6/16',
+				'container ~section-pt-2/4 relative min-h-screen snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16',
 				className
 			)}
 		>
