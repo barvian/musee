@@ -150,28 +150,13 @@ function CameraRig({
 function Light() {
 	const ref = useRef<Mesh>(null)
 
+	// Triggers a React warning:
+	// https://github.com/pmndrs/drei/issues/314
 	const progress = useMergedProgress(2)
-	const motionProgress = useMotionValue(0)
-	useEffect(() => {
-		motionProgress.set(progress)
-	}, [progress])
-	const smoothedMotionProgress = useSpring(motionProgress, SPRING)
-
-	useFrame(() => {
-		if (smoothedMotionProgress.get() >= 100) return
-		ref.current?.geometry.dispose()
-		ref.current!.geometry = new TorusGeometry(
-			1,
-			0.075,
-			12,
-			48,
-			Math.PI * 2 * (smoothedMotionProgress.get() / 100) + 0.01 // 0.01 = margin of error for spring
-		)
-	})
 
 	return (
 		<Torus
-			args={[1, 0.075, 12, 48, 0]}
+			args={[1, 0.075, 12, 48, Math.PI * 2 * (progress / 100)]}
 			ref={ref}
 			rotation={[Math.PI + 0.2, 0, Math.PI]} // flip it for a more normal loading animation
 			position={[-0.25, -0.125, -2.5]}
