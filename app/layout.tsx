@@ -23,11 +23,11 @@ export default function RootLayout({
 	return (
 		<html lang="en" className={`relative scroll-smooth bg-black text-white ${cera.variable}`}>
 			<body
-				className="~header-p-6/12"
-				style={{ '--header-h': 'calc(var(--header-p) * 2 + 1.375rem)' }}
+				className="~header-py-6/12"
+				style={{ '--header-h': 'calc(var(--header-py) * 2 + 1.375rem)' }}
 			>
 				<Guides />
-				<header className="fixed top-0 z-10 w-full py-[--header-p]">
+				<header className="fixed top-0 z-10 w-full py-[--header-py]">
 					<div className="grid-guides container flex items-center justify-between gap-4 md:grid">
 						<svg
 							width="77"

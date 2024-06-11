@@ -334,15 +334,20 @@ function BottomAlignedSectionWithIntro({
 		}
 	)
 
-	const { scrollYProgress } = useScroll({
+	const { scrollYProgress: outProgress } = useScroll({
 		target: scope,
 		offset: ['end 55%', 'end 35%']
 	})
-	const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
+	const opacity = useTransform(outProgress, [0, 1], [1, 0])
 
 	return (
 		<Section className={clsx('content-end', className)} {...props}>
-			<motion.div style={{ opacity }} ref={scope} className="grid-guides grid gap-4">
+			<motion.div
+				style={{ opacity }}
+				ref={scope}
+				// TODO: generalize this for any section:
+				className="grid-guide mb-[calc(100vh-100svh)] grid gap-4" // env(safe-area-inset-bottom) didn't work for some reason
+			>
 				<TitleTag className="guides-4:col-start-2 guides-4:col-span-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem] col-span-2 font-serif ~text-5xl/8xl">
 					<SplitText
 						characterRef={(el, index) => {
@@ -599,7 +604,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 			ref={innerRef}
 			className={clsx(
 				control && 'pointer-events-none',
-				'container ~section-pt-2/4 relative min-h-screen snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16',
+				'container ~section-pt-2/4 min-h-safe-screen relative snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16',
 				className
 			)}
 		>

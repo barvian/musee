@@ -48,8 +48,8 @@ export default {
 		plugin(({ matchUtilities, theme }) => {
 			matchUtilities(
 				{
-					'header-p': (val) => ({
-						'--header-p': val
+					'header-py': (val) => ({
+						'--header-py': val
 					})
 				},
 				{ values: theme('padding') }

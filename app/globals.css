@@ -6,6 +6,11 @@
 	.grid-guides {
 		@apply guides-5:grid-cols-[1fr_1.3fr_1.45fr_1.3fr_1fr] guides-4:grid-cols-[1fr_1.45fr_1.45fr_1fr] grid-cols-2;
 	}
+
+	.min-h-safe-screen {
+		min-height: 100vh;
+		min-height: 100svh;
+	}
 }
 
 @layer components {
