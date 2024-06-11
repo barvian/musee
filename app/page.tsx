@@ -288,10 +288,10 @@ function BottomAlignedSection({
 	return (
 		<Section className={clsx('content-end', className)} {...props}>
 			<motion.div style={{ opacity }} ref={innerRef} className="grid-guides grid gap-4">
-				<TitleTag className="guides-4:col-start-2 guides-4:col-span-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem] col-span-2 font-serif ~text-5xl/8xl">
+				<TitleTag className="col-span-2 font-serif ~text-5xl/8xl guides-4:col-span-2 guides-4:col-start-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem]">
 					{title}
 				</TitleTag>
-				<p className="guides-4:col-start-2 guides-4:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:col-span-2 guides-5:lg:col-span-1 col-span-2 max-w-prose justify-self-center text-sm text-white/70">
+				<p className="col-span-2 max-w-prose justify-self-center text-sm text-white/70 guides-4:col-span-2 guides-4:col-start-2 guides-5:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:lg:col-span-1">
 					{children}
 				</p>
 			</motion.div>
@@ -346,9 +346,9 @@ function BottomAlignedSectionWithIntro({
 				style={{ opacity }}
 				ref={scope}
 				// TODO: generalize this for any section:
-				className="grid-guide mb-[calc(100vh-100svh)] grid gap-4" // env(safe-area-inset-bottom) didn't work for some reason
+				className="grid-guides mb-[calc(100vh-100svh)] grid gap-4" // env(safe-area-inset-bottom) didn't work for some reason
 			>
-				<TitleTag className="guides-4:col-start-2 guides-4:col-span-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem] col-span-2 font-serif ~text-5xl/8xl">
+				<TitleTag className="col-span-2 font-serif ~text-5xl/8xl guides-4:col-span-2 guides-4:col-start-2 guides-5:col-span-3 guides-5:justify-self-end guides-5:text-right guides-5:~guides-5:~max-w-[20rem]/[28.75rem]">
 					<SplitText
 						characterRef={(el, index) => {
 							characterRefs.current[index] = el
@@ -359,7 +359,7 @@ function BottomAlignedSectionWithIntro({
 				</TitleTag>
 				<p
 					ref={contentRef}
-					className="guides-4:col-start-2 guides-4:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:col-span-2 guides-5:lg:col-span-1 col-span-2 max-w-prose justify-self-center text-sm text-white/70"
+					className="col-span-2 max-w-prose justify-self-center text-sm text-white/70 guides-4:col-span-2 guides-4:col-start-2 guides-5:col-span-2 guides-5:~lg:~mt-8/16 guides-5:~lg:~p-4/8 guides-5:lg:col-span-1"
 				>
 					{children}
 				</p>
@@ -434,7 +434,7 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 
 	return (
 		<Section {...props} className="grid-guides grid content-center items-center gap-4">
-			<div ref={scope} className="guides-4:col-start-2 col-span-2">
+			<div ref={scope} className="col-span-2 guides-4:col-start-2">
 				<dl className="~space-y-6/12">
 					{items.map(({ title, content }, i) => (
 						<div
@@ -537,7 +537,7 @@ function BottomAlignedSection2({
 			<div ref={scope} className="grid-guides grid gap-4">
 				<div
 					ref={titleWrapperRef}
-					className="guides-5:max-lg:col-span-3 guides-5:max-lg:col-start-2 guides-4:col-start-2 col-span-2"
+					className="col-span-2 guides-4:col-start-2 guides-5:max-lg:col-span-3 guides-5:max-lg:col-start-2"
 				>
 					<h2 className="font-serif ~text-5xl/8xl">
 						<SplitText
@@ -551,7 +551,7 @@ function BottomAlignedSection2({
 				</div>
 				<div
 					ref={content1WrapperRef}
-					className="guides-5:lg:col-start-4 guides-5:max-lg:col-start-2 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-4:col-start-2 guides-4:row-start-2"
+					className="guides-4:col-start-2 guides-4:row-start-2 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-5:max-lg:col-start-2 guides-5:lg:col-start-4"
 				>
 					<p ref={content1Ref} className="max-w-prose text-xs text-white/70">
 						{content1}
@@ -559,7 +559,7 @@ function BottomAlignedSection2({
 				</div>
 				<div
 					ref={content2WrapperRef}
-					className="guides-5:lg:col-start-5 guides-5:max-lg:col-start-4 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-4:col-start-3 guides-4:row-start-2"
+					className="guides-4:col-start-3 guides-4:row-start-2 guides-5:col-span-1 guides-5:max-lg:col-span-2 guides-5:max-lg:col-start-4 guides-5:lg:col-start-5"
 				>
 					<p ref={content2Ref} className="max-w-prose text-xs text-white/70">
 						{content2}
@@ -604,7 +604,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 			ref={innerRef}
 			className={clsx(
 				control && 'pointer-events-none',
-				'container ~section-pt-2/4 min-h-safe-screen relative snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16',
+				'container min-h-safe-screen relative snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16 ~section-pt-2/4',
 				className
 			)}
 		>
