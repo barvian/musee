@@ -228,7 +228,7 @@ export default function Home() {
 				onScrollProgress={makeOnScrollProgress(3)}
 				items={[
 					{
-						title: 'Missing Arms Mystery',
+						title: 'Missing arms mystery',
 						content: (
 							<>
 								One of the most intriguing aspects of the Venus de Milo is its missing arms. When
@@ -239,7 +239,7 @@ export default function Home() {
 						)
 					},
 					{
-						title: 'Controversial Identification',
+						title: 'Controversial identification',
 						content: (
 							<>
 								While widely accepted as a depiction of Aphrodite, the identification of the Venus
