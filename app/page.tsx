@@ -73,8 +73,8 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
-	const spring =
-		process.env.NODE_ENV !== 'development' ? SCENE_SPRING : useControls('scene', SCENE_SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const spring = SCENE_SPRING
+	// const spring = useControls('scene', SCENE_SPRING)
 
 	const cameraPosition = useMotionVector3(cameraPositions[0])
 	const smoothedCameraPosition = useVector3Spring(cameraPosition, spring)
@@ -82,8 +82,6 @@ export default function Home() {
 	const smoothedCameraLookAt = useVector3Spring(cameraLookAt, spring)
 	const floatIntensity = useMotionVector3(floatIntensities[0])
 	const smoothedFloatIntensity = useVector3Spring(floatIntensity, spring)
-
-	// const progress = useMergedProgress(2)
 
 	const makeOnScrollProgress = (curr: number) => {
 		const prev = Math.max(curr - 1, 0)
@@ -123,26 +121,6 @@ export default function Home() {
 					/>
 				</motion.div>
 			</Suspense>
-			{/* Not a fallback for suspense: https://github.com/framer/motion/issues/1193 */}
-			{/* <AnimatePresence>
-				{progress < 100 && (
-					<Progress.Root asChild value={progress}>
-						<motion.div
-							className="fixed left-1/2 top-1/2 h-3 w-80 -translate-x-1/2 -translate-y-1/2 overflow-clip rounded-full bg-white/25"
-							exit={{ opacity: 0, filter: 'blur(8px)' }}
-						>
-							<Progress.Indicator asChild>
-								<motion.div
-									className="size-full rounded-[inherit] bg-white"
-									initial={{ x: '-100%' }}
-									animate={{ x: `-${100 - progress}%` }}
-									transition={{ type: 'spring', bounce: false }}
-								></motion.div>
-							</Progress.Indicator>
-						</motion.div>
-					</Progress.Root>
-				)}
-			</AnimatePresence> */}
 			<TOC.Root className="max-guides-4:hidden">
 				<TOC.Item title="Museum of Ancient Art" href="#" sectionRef={sectionRefs.current[0]} />
 				<TOC.Item
@@ -316,7 +294,8 @@ function BottomAlignedSectionWithIntro({
 		target: scope,
 		offset: ['start end', 'end end']
 	})
-	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const spring = SPRING
+	// const spring = useControls(SPRING)
 	const inProgress = useSpring(_inProgress, spring)
 	useScrubber(
 		() =>
@@ -386,7 +365,8 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	const contentRefs = useRef(Array<HTMLElement | null>(items.length))
 
 	// Entrance animations
-	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const spring = SPRING
+	// const spring = useControls(SPRING)
 	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
 		offset: ['start 80%', 'center 55%'] // 55% = compensate for the header
@@ -494,7 +474,8 @@ function BottomAlignedSection2({
 		target: scope,
 		offset: ['start end', 'end end']
 	})
-	const spring = process.env.NODE_ENV !== 'development' ? SPRING : useControls(SPRING) // eslint-disable-line react-hooks/rules-of-hooks
+	const spring = SPRING
+	// const spring = useControls(SPRING)
 	const inProgress = useSpring(_inProgress, spring)
 	useScrubber(
 		() =>
@@ -579,8 +560,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 	const innerRef = useRef<HTMLElement>(null)
 	useImperativeHandle(ref, () => innerRef.current!, [])
 
-	// Write it this way so it gets tree shaken:
-	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control // eslint-disable-line react-hooks/rules-of-hooks
+	// const { control } = useControls({ control: false })
 
 	// Track scroll progress while in view
 	useLayoutEffect(() => {
@@ -603,7 +583,7 @@ function Section({ children, ref, onScrollProgress, className, ...props }: Secti
 			{...props}
 			ref={innerRef}
 			className={clsx(
-				control && 'pointer-events-none',
+				// control && 'pointer-events-none',
 				'container min-h-safe-screen relative snap-start pt-[calc(var(--header-h)+var(--section-pt))] ~pb-8/16 ~section-pt-2/4',
 				className
 			)}

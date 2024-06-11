@@ -4,7 +4,16 @@ import localFont from 'next/font/local'
 import './globals.css'
 
 const cera = localFont({
-	src: './fonts/Cera-Variable-Demo.woff',
+	src: [
+		{
+			path: './fonts/Cera-Pro-Regular.woff2',
+			weight: '400'
+		},
+		{
+			path: './fonts/Cera-Pro-Medium.woff2',
+			weight: '500'
+		}
+	],
 	variable: '--font-cera'
 })
 
@@ -80,11 +89,11 @@ export default function RootLayout({
 function Guides() {
 	return (
 		<div className="pointer-events-none fixed inset-0 z-50 size-full">
-			<div className="grid-guides container max-guides-4:~px-6/8 relative grid h-full">
-				<div className="max-guides-4:border-l border-r border-white/10"></div>
+			<div className="grid-guides container relative grid h-full max-guides-4:~px-6/8">
+				<div className="border-r border-white/10 max-guides-4:border-l"></div>
 				<div className="border-r border-white/10"></div>
-				<div className="max-guides-4:hidden border-r border-white/10"></div>
-				<div className="max-guides-5:hidden border-r border-white/10"></div>
+				<div className="border-r border-white/10 max-guides-4:hidden"></div>
+				<div className="border-r border-white/10 max-guides-5:hidden"></div>
 			</div>
 		</div>
 	)

@@ -8,16 +8,16 @@ import {
 	useFrame
 } from '@react-three/fiber'
 import { Mesh, Group, MeshStandardMaterial, TorusGeometry, PointLight, CanvasTexture } from 'three'
-import { OrbitControls, Torus, useEnvironment, useGLTF, useProgress } from '@react-three/drei'
+import { OrbitControls, Torus, useEnvironment, useGLTF } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
-import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
-import { Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+import { Bloom, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
+import { Suspense, useRef } from 'react'
 import { suspend } from 'suspend-react'
 const studio = import('@pmndrs/assets/hdri/studio.exr')
 import { motion } from 'framer-motion-3d'
 import { expoOut, type MotionVector3, type MotionVector3Tuple } from '@/utils/motion'
 import { useControls } from 'leva'
-import { useMotionValue, useSpring, type SpringOptions } from 'framer-motion'
+import { type SpringOptions } from 'framer-motion'
 import useMergedProgress from '@/hooks/useMergedProgress'
 
 const SPRING: SpringOptions = {
@@ -46,19 +46,18 @@ export default function Scene({
 	floatSpeed,
 	...props
 }: CameraRigProps & Omit<CanvasProps, 'children'>) {
-	// Write it this way so it gets tree shaken:
-	const control = process.env.NODE_ENV === 'development' && useControls({ control: false }).control // eslint-disable-line react-hooks/rules-of-hooks
+	// const { control } = useControls({ control: false })
 
 	return (
 		<Canvas {...props} camera={{ position: [20, 0, -5], fov: 8 }}>
-			{!control && (
-				<CameraRig
-					cameraLookAt={cameraLookAt}
-					cameraPosition={cameraPosition}
-					floatIntensity={floatIntensity}
-					floatSpeed={floatSpeed}
-				/>
-			)}
+			{/* {!control && ( */}
+			<CameraRig
+				cameraLookAt={cameraLookAt}
+				cameraPosition={cameraPosition}
+				floatIntensity={floatIntensity}
+				floatSpeed={floatSpeed}
+			/>
+			{/* )} */}
 			<RadialGradientTexture
 				attach="background"
 				stops={stops}
@@ -108,14 +107,14 @@ export default function Scene({
 				<Noise opacity={0.025} />
 				<Vignette offset={0} darkness={0.75} />
 			</EffectComposer>
-			{process.env.NODE_ENV === 'development' && control && (
+			{/* {control && (
 				<OrbitControls
 					// @ts-expect-error weird type issue
 					onChange={(event) => {
 						console.log(event.target.object)
 					}}
 				/>
-			)}
+			)} */}
 		</Canvas>
 	)
 }

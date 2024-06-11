@@ -1,12 +1,12 @@
 import type { AnimationPlaybackControls, MotionValue } from 'framer-motion'
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 export default function useScrubber(
 	setup: () => AnimationPlaybackControls,
 	scrubber: MotionValue<number>,
-	{ layoutEffect = true, once = false } = {}
+	{ once = false } = {}
 ) {
-	;(layoutEffect ? useLayoutEffect : useEffect)(() => {
+	useLayoutEffect(() => {
 		const animation = setup()
 		animation.pause()
 		const { duration } = animation

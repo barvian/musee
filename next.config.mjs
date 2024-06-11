@@ -4,6 +4,9 @@ export default {
 	// https://github.com/framer/motion/issues/2668
 	reactStrictMode: false,
 	experimental: {
-		reactCompiler: true
+		reactCompiler: {
+			compilationMode: 'all',
+			panicThreshold: 'CRITICAL_ERRORS'
+		}
 	}
 }
