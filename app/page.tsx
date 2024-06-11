@@ -28,14 +28,10 @@ import Scene from './Scene'
 import type { Vector3Tuple } from 'three'
 import { sharedInView, transformVector3, useMotionVector3, useVector3Spring } from '@/utils/motion'
 import { useControls } from 'leva'
+import { screens } from '@/theme'
+import { useMedia } from 'react-use'
 
 const SPRING = {
-	stiffness: 100,
-	damping: 25,
-	mass: 1
-}
-
-const SCENE_SPRING = {
 	stiffness: 100,
 	damping: 40,
 	mass: 1
@@ -50,9 +46,16 @@ const cameraPositions: Array<Vector3Tuple> = [
 ]
 const cameraLookAts: Array<Vector3Tuple> = [
 	[-0.15, 0, 0],
-	[0, 0, 1.05],
+	[0, 0, 1.25],
 	[-0.5, -0.7, -2],
-	[-2.15, -0.5, 0],
+	[-2.35, -0.5, 0],
+	[-0.25, -0.1, 0]
+]
+const narrowCameraLookAts: Array<Vector3Tuple> = [
+	[-0.15, 0, 0],
+	[0, -0.1, 0.125],
+	[-0.2, -0.7, -2],
+	[0, -0.75, 0],
 	[-0.25, -0.1, 0]
 ]
 const floatIntensities: Array<Vector3Tuple> = [
@@ -65,6 +68,10 @@ const floatIntensities: Array<Vector3Tuple> = [
 
 const ZERO: Vector3Tuple = [0, 0, 0]
 
+const narrowQuery = `not (min-width: ${screens['guides-4']})`
+const narrow: Pick<MediaQueryList, 'matches'> =
+	typeof window === 'undefined' ? { matches: false } : window.matchMedia(narrowQuery)
+
 export default function Home() {
 	// We need this to be an array of refs, so we can pass the inner refs to <TOC.Item>
 	const sectionRefs = useRef(
@@ -73,8 +80,8 @@ export default function Home() {
 			.map(() => createRef<HTMLElement>())
 	)
 
-	const spring = SCENE_SPRING
-	// const spring = useControls('scene', SCENE_SPRING)
+	const spring = SPRING
+	// const spring = useControls(SPRING)
 
 	const cameraPosition = useMotionVector3(cameraPositions[0])
 	const smoothedCameraPosition = useVector3Spring(cameraPosition, spring)
@@ -94,13 +101,23 @@ export default function Home() {
 			[0, 1],
 			[cameraLookAts[prev], cameraLookAts[curr]]
 		)
+		const [narrowLookX, narrowLookY, narrowLookZ] = transformVector3(
+			[0, 1],
+			[narrowCameraLookAts[prev], narrowCameraLookAts[curr]]
+		)
 		const [floatX, floatY, floatZ] = transformVector3(
 			[0, 0.1, 0.9, 1], // stop float mid-transition
 			[floatIntensities[prev], ZERO, ZERO, floatIntensities[curr]]
 		)
 		return (progress: number) => {
+			const isNarrow = narrow.matches
+
 			cameraPosition.set(posX(progress), posY(progress), posZ(progress))
-			cameraLookAt.set(lookX(progress), lookY(progress), lookZ(progress))
+			cameraLookAt.set(
+				(isNarrow ? narrowLookX : lookX)(progress),
+				(isNarrow ? narrowLookY : lookY)(progress),
+				(isNarrow ? narrowLookZ : lookZ)(progress)
+			)
 			floatIntensity.set(floatX(progress), floatY(progress), floatZ(progress))
 		}
 	}
@@ -365,11 +382,12 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	const contentRefs = useRef(Array<HTMLElement | null>(items.length))
 
 	// Entrance animations
+	const isNarrow = useMedia(narrowQuery)
 	const spring = SPRING
 	// const spring = useControls(SPRING)
 	const { scrollYProgress: _inProgress } = useScroll({
 		target: scope,
-		offset: ['start 80%', 'center 55%'] // 55% = compensate for the header
+		offset: isNarrow ? ['start end', 'end end'] : ['start 80%', 'center 55%'] // 55% = compensate for the header
 	})
 	const inProgress = useSpring(_inProgress, spring)
 	useScrubber(
@@ -413,7 +431,10 @@ function LeftAlignedSection({ items, ...props }: LeftAlignedSectionProps) {
 	)
 
 	return (
-		<Section {...props} className="grid-guides grid content-center items-center gap-4">
+		<Section
+			{...props}
+			className="grid-guides grid content-end items-center gap-4 guides-4:content-center"
+		>
 			<div ref={scope} className="col-span-2 guides-4:col-start-2">
 				<dl className="~space-y-6/12">
 					{items.map(({ title, content }, i) => (

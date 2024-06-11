@@ -6,3 +6,7 @@
 body {
 	display: contents;
 }
+
+next-route-announcer {
+	position: fixed !important;
+}

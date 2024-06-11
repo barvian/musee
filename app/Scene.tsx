@@ -17,12 +17,7 @@ const studio = import('@pmndrs/assets/hdri/studio.exr')
 import { motion } from 'framer-motion-3d'
 import { expoOut, type MotionVector3, type MotionVector3Tuple } from '@/utils/motion'
 import { useControls } from 'leva'
-import { type SpringOptions } from 'framer-motion'
 import useMergedProgress from '@/hooks/useMergedProgress'
-
-const SPRING: SpringOptions = {
-	bounce: 0
-}
 
 extend({
 	Mesh,
