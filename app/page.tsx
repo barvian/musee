@@ -147,10 +147,19 @@ export default function Home() {
 				/>
 				<TOC.Item
 					href="#discovery-of-a-mutilated-masterpiece"
+					title="Discovery of a mutilated masterpiece"
 					sectionRef={sectionRefs.current[2]}
 				/>
-				<TOC.Item href="#missing-arms-mystery" sectionRef={sectionRefs.current[3]} />
-				<TOC.Item href="#an-enigmatic-icon" sectionRef={sectionRefs.current[4]} />
+				<TOC.Item
+					href="#missing-arms-mystery"
+					title="Missing arms mystery"
+					sectionRef={sectionRefs.current[3]}
+				/>
+				<TOC.Item
+					href="#an-enigmatic-icon"
+					title="An enigmatic icon"
+					sectionRef={sectionRefs.current[4]}
+				/>
 			</TOC.Root>
 
 			<BottomAlignedSection
