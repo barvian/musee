@@ -1,3 +1,5 @@
+https://github.com/barvian/musee/assets/868352/af5b5bf6-2a97-4a08-9328-3b4cbe523b8e
+
 My take on Kevin Pham's [awesome design](https://dribbble.com/shots/14281766-Ancient-Art-Museum-Landing-Page).
 
 ## Getting Started
