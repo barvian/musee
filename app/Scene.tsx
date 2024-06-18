@@ -160,6 +160,12 @@ function Light() {
 	)
 }
 
+/**
+ * "Venus de Milo" (https://skfb.ly/oDLJZ) by Nancy/Lanzi Luo is licensed under
+ * Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+ *
+ * Converted with https://github.com/pmndrs/gltfjsx
+ */
 type GLTFResult = GLTF & {
 	nodes: {
 		Object_2: Mesh
