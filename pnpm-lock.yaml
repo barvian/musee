@@ -93,8 +93,8 @@ importers:
         specifier: 15.0.0-rc.0
         version: 15.0.0-rc.0(eslint@8.57.0)(typescript@5.4.5)
       fluid-tailwind:
-        specifier: ^0.3.9
-        version: 0.3.9(tailwindcss@3.4.3)
+        specifier: ^1.0.0
+        version: 1.0.0(tailwindcss@3.4.4)
       leva:
         specifier: ^0.9.35
         version: 0.9.35(patch_hash=cwgh6ekgviw3m5mwjmkyzafqmq)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
@@ -108,13 +108,13 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1(prettier@3.2.5)
       tailwindcss:
-        specifier: ^3.4.3
-        version: 3.4.3
+        specifier: ^3.4.4
+        version: 3.4.4
       tw-reset:
         specifier: ^0.0.2
-        version: 0.0.2(tailwindcss@3.4.3)
+        version: 0.0.2(tailwindcss@3.4.4)
       typescript:
-        specifier: '>=5'
+        specifier: 5.4.5
         version: 5.4.5
 
 packages:
@@ -1360,8 +1360,8 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  fluid-tailwind@0.3.9:
-    resolution: {integrity: sha512-qU4plbj1lk6ytQgsoxCJy8xvZ8FghDuzIDBVoM9kFd7hUwW2XnJtDp3MONvoZWLYHKIT6DmQKVnNL3zRlO7BHg==}
+  fluid-tailwind@1.0.0:
+    resolution: {integrity: sha512-Qd/BfPvNtPrNsoThShUJULytyItY9qPR0WAnPbwS3Klx9F6oBFbcQe/eg4GvOWBp7h8r9QOiZLnKUkIHvMlzfA==}
     peerDependencies:
       tailwindcss: ^3.2.0
 
@@ -2430,8 +2430,8 @@ packages:
     peerDependencies:
       react: '>=17.0'
 
-  tailwindcss@3.4.3:
-    resolution: {integrity: sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==}
+  tailwindcss@3.4.4:
+    resolution: {integrity: sha512-ZoyXOdJjISB7/BcLTR6SEsLgKtDStYyYZVLsUtWChO4Ps20CBad7lfJKVDiejocV4ME1hLmyY0WJE3hSDcmQ2A==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -3219,9 +3219,9 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  '@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.3)':
+  '@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.4)':
     dependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: 3.4.4
 
   '@total-typescript/ts-reset@0.5.1': {}
 
@@ -4057,12 +4057,12 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  fluid-tailwind@0.3.9(tailwindcss@3.4.3):
+  fluid-tailwind@1.0.0(tailwindcss@3.4.4):
     dependencies:
       filter-obj: 5.1.0
       map-obj: 5.0.2
       picocolors: 1.0.1
-      tailwindcss: 3.4.3
+      tailwindcss: 3.4.4
 
   for-each@0.3.3:
     dependencies:
@@ -5116,7 +5116,7 @@ snapshots:
     dependencies:
       react: 19.0.0-rc-f994737d14-20240522
 
-  tailwindcss@3.4.3:
+  tailwindcss@3.4.4:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -5222,11 +5222,11 @@ snapshots:
       - immer
       - react
 
-  tw-reset@0.0.2(tailwindcss@3.4.3):
+  tw-reset@0.0.2(tailwindcss@3.4.4):
     dependencies:
-      '@tailwindcss/container-queries': 0.1.1(tailwindcss@3.4.3)
+      '@tailwindcss/container-queries': 0.1.1(tailwindcss@3.4.4)
       picocolors: 1.0.1
-      tailwindcss: 3.4.3
+      tailwindcss: 3.4.4
 
   type-check@0.4.0:
     dependencies:

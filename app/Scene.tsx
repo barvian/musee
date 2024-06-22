@@ -67,7 +67,7 @@ export default function Scene({
 				<motion.group
 					initial={{ y: -3 }}
 					animate={{ y: 0 }}
-					transition={{ ease: expoOut, duration: 1 }}
+					transition={{ type: 'spring', stiffness: 631, damping: 100 }}
 				>
 					<Venus position={[0, -2.3, 0]} rotation-y={0.45} />
 					{/* <Box /> */}
